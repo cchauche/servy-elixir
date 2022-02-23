@@ -1,4 +1,6 @@
 defmodule Servy.Handler do
+  require Logger
+
   def handle(request) do
     request
     |> parse()
@@ -27,7 +29,10 @@ defmodule Servy.Handler do
 
   def rewrite_path(conv), do: conv
 
-  def log(conv), do: IO.inspect(conv)
+  def log(conv) do
+    Logger.info("Request: #{inspect(conv)}")
+    conv
+  end
 
   def emojify(%{status: 200, resp_body: resp_body} = conv) do
     %{conv | resp_body: "🥸  - " <> resp_body <> " - 🥸"}
@@ -71,6 +76,7 @@ defmodule Servy.Handler do
   end
 
   def route(%{method: "GET", path: path} = conv) do
+    Logger.info("Request made for unknown path: '#{path}'")
     %{conv | status: 404, resp_body: "No #{path} here!"}
   end
 
