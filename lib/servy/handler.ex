@@ -55,16 +55,19 @@ defmodule Servy.Handler do
     }
   end
 
-  # def route(conv) do
-  #   route(conv, conv.method, conv.path)
-  # end
-
   def route(%{method: "GET", path: "/wildthings"} = conv) do
     %{conv | status: 200, resp_body: "Bears, Lions, Tigers"}
   end
 
   def route(%{method: "GET", path: "/bears"} = conv) do
     %{conv | status: 200, resp_body: "Teddy, Smokey, Paddington"}
+  end
+
+  def route(%{method: "GET", path: "/bears/new"} = conv) do
+    Path.expand("../../pages", __DIR__)
+    |> Path.join("form.html")
+    |> File.read()
+    |> handle_file(conv)
   end
 
   def route(%{method: "GET", path: "/bears/" <> id} = conv) do
@@ -74,6 +77,13 @@ defmodule Servy.Handler do
   def route(%{method: "GET", path: "/about"} = conv) do
     Path.expand("../../pages", __DIR__)
     |> Path.join("about.html")
+    |> File.read()
+    |> handle_file(conv)
+  end
+
+  def route(%{method: "GET", path: "/pages/" <> filename} = conv) do
+    Path.expand("../../pages", __DIR__)
+    |> Path.join("#{filename}.html")
     |> File.read()
     |> handle_file(conv)
   end
@@ -203,6 +213,30 @@ IO.puts(response)
 
 request = """
 GET /about HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+response = Servy.Handler.handle(request)
+
+IO.puts(response)
+
+request = """
+GET /bears/new HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+response = Servy.Handler.handle(request)
+
+IO.puts(response)
+
+request = """
+GET /pages/about HTTP/1.1
 Host: example.com
 User-Agent: ExampleBrowser/1.0
 Accept: */*
