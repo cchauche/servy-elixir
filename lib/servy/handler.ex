@@ -7,7 +7,7 @@ defmodule Servy.Handler do
   alias Servy.Conv
   alias Servy.BearController
 
-  @pages_path Path.expand("../../pages", File.cwd!())
+  @pages_path Path.expand("../../pages", __DIR__)
 
   @doc "Transforms the request into a response."
   def handle(request) do
@@ -42,7 +42,7 @@ defmodule Servy.Handler do
   end
 
   def route(%Conv{method: "GET", path: "/about"} = conv) do
-    Path.expand("../../pages", __DIR__)
+    @pages_path
     |> Path.join("about.html")
     |> File.read()
     |> handle_file(conv)
@@ -53,7 +53,7 @@ defmodule Servy.Handler do
   end
 
   def route(%Conv{method: "GET", path: "/pages/" <> filename} = conv) do
-    Path.expand("../../pages", __DIR__)
+    @pages_path
     |> Path.join("#{filename}.html")
     |> File.read()
     |> handle_file(conv)
