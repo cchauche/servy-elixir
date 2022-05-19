@@ -21,7 +21,7 @@ defmodule Servy.BearController do
 
   def show(conv, %{"id" => id}) do
     bear = Wildthings.get_bear(id)
-    %{conv | status: 200, resp_body: "<h1>Bear #{bear.id}: #{bear.name}"}
+    %{conv | status: 200, resp_body: "<h1>Bear #{bear.id}: #{bear.name}</h1>"}
   end
 
   def create(conv, %{"type" => type, "name" => name}) do
@@ -30,5 +30,9 @@ defmodule Servy.BearController do
       | status: 201,
         resp_body: "Created a #{type} bear named #{name}!"
     }
+  end
+
+  def delete(conv, %{"id" => _id}) do
+    %{conv | status: 403, resp_body: "Bears must never be deleted!"}
   end
 end

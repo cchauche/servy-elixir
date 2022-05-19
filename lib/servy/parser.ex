@@ -26,12 +26,19 @@ defmodule Servy.Parser do
 
   def parse_params(_content_type, _params_string), do: %{}
 
-  def parse_headers(header_lines, headers \\ %{})
-
-  def parse_headers([h | t], headers) do
-    [key, val] = String.split(h, ": ")
-    parse_headers(t, Map.put(headers, key, val))
+  def parse_headers(header_lines) do
+    Enum.reduce(header_lines, %{}, fn line, acc ->
+      [key, val] = String.split(line, ": ")
+      Map.put(acc, key, val)
+    end)
   end
 
-  def parse_headers([], headers), do: headers
+  # def parse_headers(header_lines, headers \\ %{})
+
+  # def parse_headers([h | t], headers) do
+  #   [key, val] = String.split(h, ": ")
+  #   parse_headers(t, Map.put(headers, key, val))
+  # end
+
+  # def parse_headers([], headers), do: headers
 end
